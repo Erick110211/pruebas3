@@ -6,10 +6,14 @@ using UnityEngine;
 
 public class CameraPointerManeger : MonoBehaviour
 {
+    [SerializeField] private GameObject pointer;
+    [SerializeField] private float maxDistancePointer = 4.5f;
     [SerializeField] private const float _maxDistance = 10;
     [SerializeField] private GameObject _gazedAtObject = null;
     [SerializeField] private readonly string interactableTag = "interactable";
     [SerializeField] private float scalesize = 0.025f;
+    [Range(0, 1)]
+    [SerializeField] private float distPointerObject = 0.95f;
 
     /// <summary>
     /// Update is called once per frame.
@@ -53,7 +57,7 @@ public class CameraPointerManeger : MonoBehaviour
     }
     private void PointerOnGaze(Vector3 hitPoint)
     {
-        float scaleFactor = scaleSize * Vector3.Distance(transform.position, hitPoint);
+        float scaleFactor = scalesize * Vector3.Distance(transform.position, hitPoint);
         pointer.transform.localScale = Vector3.one * scaleFactor;
         pointer.transform.parent.position = CalculatePointerPosition(transform.position, hitPoint, distPointerObject);
 
