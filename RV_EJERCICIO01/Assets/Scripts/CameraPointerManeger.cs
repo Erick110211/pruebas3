@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class CameraPointerManeger : MonoBehaviour
 {
-    private const float _maxDistance = 10;
-    private GameObject _gazedAtObject = null;
+    [SerializeField] private const float _maxDistance = 10;
+    [SerializeField] private GameObject _gazedAtObject = null;
+    [SerializeField] private readonly string interactableTag = "interactable";
+    [SerializeField] private float scalesize = 0.025f;
 
     /// <summary>
     /// Update is called once per frame.
@@ -21,22 +25,44 @@ public class CameraPointerManeger : MonoBehaviour
             if (_gazedAtObject != hit.transform.gameObject)
             {
                 // New GameObject.
-                _gazedAtObject?.SendMessage("OnPointerExit");
+                _gazedAtObject?.SendMessage("OnPointerExit", null, SendMessageOptions.DontRequireReceiver);
                 _gazedAtObject = hit.transform.gameObject;
-                _gazedAtObject.SendMessage("OnPointerEnter");
+                _gazedAtObject.SendMessage("OnPointerEnter", null, SendMessageOptions.DontRequireReceiver);
             }
         }
         else
         {
             // No GameObject detected in front of the camera.
-            _gazedAtObject?.SendMessage("OnPointerExit");
+            _gazedAtObject?.SendMessage("OnPointerExit", null, SendMessageOptions.DontRequireReceiver);
             _gazedAtObject = null;
         }
 
         // Checks for screen touches.
         if (Google.XR.Cardboard.Api.IsTriggerPressed)
         {
-            _gazedAtObject?.SendMessage("OnPointerClick");
+            _gazedAtObject?.SendMessage("OnPointerClick", null, SendMessageOptions.DontRequireReceiver);
         }
+
+    }
+    private void PointerOutGaze()
+    {
+        pointer.transform.localScale = Vector3.one * 0.1f;
+        pointer.transform.parent.transform.localPosition = new Vector3(0, 0, maxDistancePointer);
+        pointer.transform.parent.parent.transform.rotation = transform.rotation;
+        GazeManager.Instance.CancelGazeSelection();
+    }
+    private void PointerOnGaze(Vector3 hitPoint)
+    {
+        float scaleFactor = scaleSize * Vector3.Distance(transform.position, hitPoint);
+        pointer.transform.localScale = Vector3.one * scaleFactor;
+        pointer.transform.parent.position = CalculatePointerPosition(transform.position, hitPoint, distPointerObject);
+
+    }
+    private Vector3 CalculatePointerPosition(Vector3 p0, Vector3 p1, float t)
+    {
+        float x = p0.x + t * (p1.x - p0.x);
+        float y = p0.y + t * (p1.y - p0.y);
+        float z = p0.z + t * (p1.z - p0.z);
+        return new Vector3(x, y, z);
     }
 }
