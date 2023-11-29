@@ -14,7 +14,15 @@ public class CameraPointerManager : MonoBehaviour
     
     private const float _maxDistance = 10;
     private GameObject _gazedAtObject = null;
+    private void Start()
+    {
+        GazeManager.Instance.OnGazeSelection += GazeSelection;
+    }
 
+    private void GazeSelection()
+    {
+        _gazedAtObject?.SendMessage("OnPointerClick",null,SendMessageOptions.DontRequireReceiver);
+    }
     /// <summary>
     /// Update is called once per frame.
     /// </summary>
