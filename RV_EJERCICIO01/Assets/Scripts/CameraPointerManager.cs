@@ -56,7 +56,7 @@ public class CameraPointerManager : MonoBehaviour
                 // New GameObject.
                 _gazedAtObject?.SendMessage("OnPointerExitXR",null,SendMessageOptions.DontRequireReceiver);
                 _gazedAtObject = hit.transform.gameObject;
-                _gazedAtObject.SendMessage("OnPointerEnteXRr", null, SendMessageOptions.DontRequireReceiver);
+                _gazedAtObject.SendMessage("OnPointerEnterXR", null, SendMessageOptions.DontRequireReceiver);
                 GazeManager.Instance.StartGazeSelection();
             }
             if (hit.transform.CompareTag(interactableTag))

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 using UnityEngine.Events;
@@ -17,8 +18,8 @@ public class UIElementXR : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void OnPointerClicXR()
-    {
+    public void OnPointerClickXR()
+    { 
         PointerEventData pointerEvent = PlacePointer();//Este es el elemento que nos permitira hacer clic sobre el elemento UI pero para ello se necesita una posicion la cual esta en la funcion PlacePointer
         ExecuteEvents.Execute(this.gameObject, pointerEvent, ExecuteEvents.pointerClickHandler); //Executamos el Evento al hacer clic;
     }
